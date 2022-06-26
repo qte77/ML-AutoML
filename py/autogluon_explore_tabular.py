@@ -22,13 +22,17 @@ environ['kaggle_ds_url'] = f'fedesoriano/{kaggle_ds_src}'
 environ['kaggle_dest'] = kaggle_dest
 environ['kaggle_ds_fn'] = kaggle_ds_fn
 
+model_save_dir = f'{save_dir}/Models'
+model_autogluon_dir = './AutogluonModels'
+
 !pip install -q kaggle
 
 !pip install -q autogluon
 
 from google.colab import drive
-import json
+import json 
 from os import environ
+from shutil import copytree
 
 import pandas as pd
 import kaggle
@@ -85,4 +89,18 @@ test_data.head()
 # Commented out IPython magic to ensure Python compatibility.
 # %%time
 # eval = predictor.evaluate(df_test)
+
+predictor.leaderboard()
+
+predictor.persist_models()
+predictor.save_space()
+
+try:
+  copytree(
+      src = model_autogluon_dir,
+      dst = f'{model_save_dir}/{model_autogluon_dir}',
+      # dirs_exist_ok = True
+  )
+except Exception as e:
+  print(e.args)
 
